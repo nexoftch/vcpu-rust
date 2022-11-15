@@ -1,7 +1,13 @@
 mod memory;
 use crate::memory::{Register, Memory, ManageMemory, ManageRegisters};
 
+mod processor;
+use crate::processor::{Processor};
+
 fn main() {
+    let mut cpu : Processor = Processor::new();
+    cpu.load_program(("C:/Users/Milos/Documents/_RUST/vcpu-rust/target/debug/420.fae").to_string());
+
     // init memory
     let mut  mem : Memory = Memory::new();
 
