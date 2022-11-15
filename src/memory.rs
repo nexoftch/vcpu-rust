@@ -3,8 +3,7 @@ use std::collections::HashMap;
 
 pub enum MemoryOperationSize {
     Byte = 1,
-    Word = 2,
-    Dword = 4
+    Word = 2
 }
 
 /**
@@ -57,11 +56,13 @@ pub enum Register {
  * 
  * Contains definitions to read and write memory in
  * either 1-, 2- or 4-byte chunks.
+ * 
+ * ToDo: Add 4 byte operations
  */
 pub trait ManageMemory {
     // Read operations
     // will call either "read8" or  "read16" on size parameter
-    fn read(&self, position : usize, size : MemoryOperationSize);
+    fn read(&self, position : usize, size : MemoryOperationSize) -> i32;
     // reads 1 byte from the memory
     fn read8(&self, position : usize) -> i8;
     // reads 2 bytes from the memory
@@ -164,12 +165,11 @@ impl Memory {
 // ToDo: Check out of bounds when reading and writing
 // ToDo: Implement 4 byte operations
 impl ManageMemory for Memory {
-    fn read(&self, position : usize, size : MemoryOperationSize) {
-        if matches!(size, MemoryOperationSize::Byte) {
-            self.read8(position);
-        } else if matches!(size, MemoryOperationSize::Word) {
-            self.read16(position);
-        }
+    fn read(&self, position : usize, size : MemoryOperationSize) -> i32 {
+        match size {
+            MemoryOperationSize::Byte => return self.read8(position) as i32,
+            MemoryOperationSize::Word => return self.read16(position) as i32,
+        };
     }
 
     fn read8(&self, position : usize) -> i8 {
@@ -181,11 +181,10 @@ impl ManageMemory for Memory {
     }
 
     fn write(&mut self, position : usize, value : i32, size : MemoryOperationSize) {
-        if matches!(size, MemoryOperationSize::Byte) {
-            self.write8(position, value as i8);
-        } else if matches!(size, MemoryOperationSize::Word) {
-            self.write16(position, value as i16);
-        }
+        match size {
+            MemoryOperationSize::Byte => self.write8(position, value as i8),
+            MemoryOperationSize::Word => self.write16(position, value as i16),
+        };
     }
 
     fn write8(&mut self, position : usize, value : i8) {
@@ -204,21 +203,17 @@ impl ManageRegisters for Memory {
         return self.register_lookup_table[&(register as i32)] as usize; 
     }
 
+    // ToDo: implement 4 byte registers
     fn get_register_size(register: Register) -> MemoryOperationSize {
         let val : i8 = register as i8;
 
         if val >= 0 && val <= 7 {
             return MemoryOperationSize::Byte;
-        }
-        else if val >= 8 && val <= 11 {
+        } else if val >= 8 && val <= 11 {
             return MemoryOperationSize::Word;
-        }
-        else if val >= 12 {
-            return MemoryOperationSize::Dword;
         }
 
         // if none of the above, return byte
-        // might need change to unknown
         return MemoryOperationSize::Byte;
     }
 }
