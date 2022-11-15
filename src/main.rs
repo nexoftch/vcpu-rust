@@ -1,15 +1,25 @@
 mod memory;
-
-use crate::memory::{Memory, ManageMemory};
+use crate::memory::{Register, Memory, ManageMemory, ManageRegisters};
 
 fn main() {
-    let mut mem : Memory = Memory::new();
+    // init memory
+    let mut  mem : Memory = Memory::new();
 
+    // writing 0x12 and 0x34, then reading both bytes together and print them
     mem.write8(0, 0x12);
     mem.write8(1, 0x34);
-    let val = mem.read16(0);
+    println!("1234: {:#02x}", mem.read16(0));
 
-    println!("{:#02x}", val);
+    // writing 0x1337 and then print both single bytes
+    mem.write16(2, 0x1337);
+    println!("13: {:#02x}", mem.read8(2));
+    println!("37: {:#02x}", mem.read8(3));
 
-    println!("Hello, world!");
+
+    // printing memory addresses of a few registers:
+    println!("EBX {:#02x}", mem.get_register_address(Register::EBX));
+    println!("AX  {:#02x}", mem.get_register_address(Register::AX));
+    println!("DH  {:#02x}", mem.get_register_address(Register::DH));
+    println!("CL  {:#02x}", mem.get_register_address(Register::CL));
+    println!("ESP {:#02x}", mem.get_register_address(Register::ESP));
 }
