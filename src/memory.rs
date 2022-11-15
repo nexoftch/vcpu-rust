@@ -1,4 +1,3 @@
-#[allow(unused_variables)]
 use std::collections::HashMap;
 
 pub enum MemoryOperationSize {
@@ -13,7 +12,6 @@ pub enum MemoryOperationSize {
  * Comments contain some information how to quickly
  * calculate properties for each register and can be ignored.
  */
-#[allow(dead_code)]
 pub enum Register {
     Unknwown = -1,
     // General purpose registers
@@ -136,6 +134,8 @@ impl Memory {
         
         memory.register_lookup_table.insert(Register::ESP as i32, 16);
         memory.register_lookup_table.insert(Register::EBP as i32, 20);
+
+        memory.register_lookup_table.insert(Register::Unknwown as i32, -1);
     }
 
 

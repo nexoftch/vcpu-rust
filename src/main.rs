@@ -15,7 +15,6 @@ fn main() {
     println!("13: {:#02x}", mem.read8(2));
     println!("37: {:#02x}", mem.read8(3));
 
-
     // printing memory addresses of a few registers:
     println!("EBX {:#02x}", mem.get_register_address(Register::EBX));
     println!("AX  {:#02x}", mem.get_register_address(Register::AX));
