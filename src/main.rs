@@ -1,8 +1,10 @@
 mod memory;
-use crate::memory::{Register, Memory, ManageMemory, ManageRegisters};
+mod types;
+use crate::memory::{Memory, ManageMemory, ManageRegisters};
 
 mod processor;
 use crate::processor::{Processor};
+use crate::types::Register;
 
 fn main() {
     let mut cpu : Processor = Processor::new();
