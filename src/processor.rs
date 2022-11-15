@@ -14,18 +14,22 @@ impl Processor {
         }
     }
     
-    // todo: check wtf that is xddd
-    pub fn load_program(&mut self, path : String) -> Result<(), Box<dyn std::error::Error + 'static>> {
-        #[cfg(debug_assertions)]
-        println!("Trying to load program '{}'...", path);
+    pub fn load_program(&mut self, path : String) -> bool {
         self.file_path = path.to_string();
+        println!("Trying to load program '{}'...", &self.file_path);
 
-        // load file
-        let mut file = fs::read(&self.file_path)?;
-        for byte in file {
-            print!("{:#02x} ", byte);
+        match fs::read(&self.file_path) {
+            Ok(file) => {
+                for byte in file {
+                    print!("{:#02x} ", byte);
+                }
+                println!("");
+                return true;
+            },
+            Err(error) => {
+                println!("Error while loading program... --> {}", error);
+                return false;
+            }
         }
-        println!("");
-        Ok(())
     }
 }
