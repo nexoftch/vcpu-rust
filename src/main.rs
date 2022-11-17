@@ -3,12 +3,14 @@ mod types;
 use crate::memory::{Memory, ManageMemory, ManageRegisters};
 
 mod processor;
-use crate::processor::{Processor};
+use crate::processor::{Processor, ReadProgramCode};
 use crate::types::Register;
 
 fn main() {
     let mut cpu : Processor = Processor::new();
-    cpu.load_program(("C:/Users/Milos/Documents/_RUST/vcpu-rust/target/debug/420.fae").to_string());
+    cpu.load_program(("D:/vcpu/temp.fae").to_string());
+    cpu.step();
+
 
     // init memory
     let mut  mem : Memory = Memory::new();

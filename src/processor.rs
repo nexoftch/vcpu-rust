@@ -1,6 +1,12 @@
 use std::fs;
 
-use crate::types::{BinaryConstant, BinaryRegister, MemoryOperationSize, Register};
+use crate::types::{
+    BinaryConstant,
+    BinaryRegister,
+    MemoryOperationSize,
+    Register,
+    Instruction
+};
 
 pub struct Processor {
     file_path : String,
@@ -10,14 +16,23 @@ pub struct Processor {
 }
 
 
-trait ReadProgramCode {
+pub trait ReadProgramCode {
     fn read_byte(&self, steps_taken : &mut u32) -> i8;
     fn read_word(&self, steps_taken : &mut u32) -> i16;
     fn read_dword(&self, steps_taken : &mut u32) -> i32;
 
     fn read_constant(&self, steps_taken : &mut u32) -> BinaryConstant;
     fn read_register(&self, steps_taken : &mut u32) -> BinaryRegister;
+
+    // tries to exectute a command and returns if the program has reached its end
+    fn step(&self) -> bool;
 }
+
+pub trait ExecuteInstructions {
+    fn mov_reg_const(&self);
+    fn mov_reg_reg(&self);
+}
+
 
 impl Processor {
     // returns a new instance of "Processor"
@@ -39,14 +54,14 @@ impl Processor {
         match fs::read(&self.file_path) {
             Ok(file) => {
                 #[cfg(debug_assertions)]
-                println!("OK!");
+                println!("\x1b[0;32mOK!\x1b[0m", );
 
                 self.program_code = file;
                 return true;
             },
             Err(error) => {
                 #[cfg(debug_assertions)]
-                println!("ERROR! --> {}", error);
+                println!("\x1b[0;31mERROR!\x1b[0m\n ---> {}", error);
 
                 return false;
             }
@@ -91,5 +106,33 @@ impl ReadProgramCode for Processor {
             size: MemoryOperationSize::Byte,
             register: Register::EAX
         };
+    }
+
+    fn step(&self) -> bool {
+        let steps_taken : &mut u32 = &mut 0;
+
+        // read instruction
+        let instruction = self.read_byte(steps_taken);
+        
+        match instruction {
+            70 => { self.mov_reg_const() }
+            71 => { self.mov_reg_reg() }
+            _ => println!("unknown instruction {}", instruction)
+        }
+
+
+        return true;
+    }
+}
+
+impl ExecuteInstructions for Processor {
+    fn mov_reg_const(&self) {
+        println!("instruction 'mov_reg_const' called");
+        self.read_byte(&mut 0);
+    }
+    
+    fn mov_reg_reg(&self) {
+        println!("instruction 'mov_reg_reg' called");
+        self.read_byte(&mut 0);
     }
 }
