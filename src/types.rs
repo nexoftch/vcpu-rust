@@ -58,3 +58,16 @@ pub enum Register {
     ESP = 16, // mod 4 = 0
     EBP = 17  // mod 4 = 1
 }
+
+pub enum Instruction {
+    mov_reg_const = 70
+}
+
+impl Instruction {
+    pub fn from_u8(val : u8) -> Instruction {
+        match val {
+            0xa0 => Instruction::mov_reg_const,
+            _ => panic!("Instruction not found")
+        }
+    }
+}
